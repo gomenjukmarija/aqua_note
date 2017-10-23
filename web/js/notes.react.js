@@ -16,10 +16,11 @@ var NoteSection = React.createClass({
             success: function (data) {
                 this.setState({notes: data.notes});
             }.bind(this)
-        });
+        });        
     },
 
     render: function() {
+        console.log('this.state.notes',this.state.notes);
         return (
             <div>
                 <div className="notes-container">
@@ -32,7 +33,7 @@ var NoteSection = React.createClass({
     }
 });
 
-var NoteList = React.createClass({
+var NoteList = React.createClass({     
     render: function() {
         var noteNodes = this.props.notes.map(function(note) {
             return (

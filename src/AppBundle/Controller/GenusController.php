@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Entity\Genus;
+use AppBundle\Entity\GenusNote;
 
 class GenusController extends Controller 
 {
@@ -21,8 +22,16 @@ class GenusController extends Controller
 		$genus->setSubFamily('Octoppdinae');
 		$genus->setSpeciesCount(rand(100,99999));
 
+		$genusNote = new GenusNote(); 
+		$genusNote->setUsername('Mary');
+		$genusNote->setuserAvatarFilename('leanna.jpeg');
+		$genusNote->setNote('Lorem ipsum dolor sit amet, consectetur adipiscing elit');
+		$genusNote->setCreatedAt(new \DateTime('-1 month'));
+		$genusNote->setGenus($genus);
+
 		$em = $this->getDoctrine()->getManager();
 		$em->persist($genus);
+		$em->persist($genusNote);
 		$em->flush();
 
 		return new Response('<html><body>Genus created!</body></html>');
@@ -65,22 +74,34 @@ class GenusController extends Controller
 			$cache->save($key, $funFact);
 		} */
 
+		$this->get('logger')
+			->info('Showing genus: '.$genusName);
+
+		$recentNotes = $em->getRepository('AppBundle:GenusNote')
+		 ->findAllRecentNotesForGenus($genus);
+
 		return $this->render('genus/show.html.twig', [
-			'genus' => $genus					
+			'genus' => $genus,
+			'recentNotecount' => count($recentNotes)
 		]);		
 	}
 
 	/**
-	* @Route("/genus/{genusName}/notes", name="genus_show_notes") 
+	* @Route("/genus/{name}/notes", name="genus_show_notes") 
 	* @Method("GET")
 	*/
-	public function getNotesAction()
+	public function getNotesAction(Genus $genus)
 	{
-		$notes = [
-			['id' => 1, 'username' => 'Mary', 'avatarUri' => '/images/leanna.jpeg', 'note' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit', 'date' => 'Dec. 10, 2016'],
-			['id' => 2, 'username' => 'John', 'avatarUri' => '/images/ryan.jpeg', 'note' => 'Ut enim ad minim veniam, quis nostrud exercitation', 'date' => 'Dec. 10, 2016'],
-			['id' => 3, 'username' => 'Jane', 'avatarUri' => '/images/leanna.jpeg', 'note' => 'Quis enim ad minim veniam, quis nostrud exercitation', 'date' => 'Dec. 10, 2016']			
-		];
+		$notes = [];
+		foreach ($genus->getNotes() as $note) {
+			$notes[] = [
+				'id' => $note->getId(),
+				'username' => $note->getUsername(),
+				'avatarUri' => '/images/'.$note->getUserAvatarFilename(),
+				'note' => $note->getNote(),
+				'date' => $note->getCreatedAt()->format('M d, Y')
+			];
+		}
 
 		$data = [
 			'notes' => $notes,			
