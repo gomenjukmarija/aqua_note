@@ -33,8 +33,9 @@ class GenusController extends Controller
 	*/
 	public function listAction() 
 	{
-		$em = $this->getDoctrine()->getManager();
-		$genuses = $em->getRepository('AppBundle:Genus')->findAll();
+		$em = $this->getDoctrine()->getManager();		
+		$genuses = $em->getRepository('AppBundle:Genus')
+			->findAllPublishedOrderBySize();
 		return $this->render('genus/list.html.twig', [
 			'genuses' => $genuses,		
 		]);	

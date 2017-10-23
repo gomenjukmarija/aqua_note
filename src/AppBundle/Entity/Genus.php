@@ -5,7 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
-* @ORM\Entity
+* @ORM\Entity(repositoryClass="AppBundle\Repository\GenusRepository")
 * @ORM\Table(name="genus")
 */
 class Genus 
@@ -36,6 +36,11 @@ class Genus
 	* @ORM\Column(type="string", nullable=true)
 	*/
 	private $funFact;
+
+	/**
+	* @ORM\Column(type="boolean")
+	*/
+	private $isPublished;
 
 	public function getName()
 	{
@@ -80,6 +85,10 @@ class Genus
 	public function getUpdatedAt()
 	{
 		return new \DateTime('-'.rand(0,100).' days');
-	}		
+	}
 
+	public function setIsPublished($isPublished)
+	{
+		$this->isPublished = $isPublished;
+	}	
 }

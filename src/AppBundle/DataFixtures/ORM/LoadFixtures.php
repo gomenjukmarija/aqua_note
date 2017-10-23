@@ -1,21 +1,54 @@
-<?php 
-
+<?php
 namespace AppBundle\DataFixtures\ORM;
-
 use AppBundle\Entity\Genus;
-use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-
-class LoadFixtures extends Fixture
+use Nelmio\Alice\Fixtures;
+class LoadFixtures implements FixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-		$genus = new Genus();
-		$genus->setName('Octopus'.rand(1,100));
-		$genus->setSubFamily('Octoppdinae');
-		$genus->setSpeciesCount(rand(100,99999)); 
+    	/*
+    	Столкнулась с ошибкой:
+    	 [Symfony\Component\Debug\Exception\
+    	 ClassNotFoundException]         
+		  Attempted to load class "Fixtures" from namespace "Nelmio\Alice".  
+		  Did you forget a "use" statement for another namespace?
 
-        $manager->persist($genus); 
-        $manager->flush();
+		  Решение: composer require --dev nelmio/alice:2.1.4 
+    	 */
+        Fixtures::load(
+        	__DIR__.'/fixtures.yml', 
+        	$manager,
+        	[
+        		'providers' => [$this]
+        	]
+        );
+    }
+
+    public function genus()
+    {
+    	$genera = [
+    		'Octopus vulgaris',
+			'Octopus briareus',
+			'Octopus filosus',
+			'Octopus joubini',
+			'Octopus salutii',
+			'Octopus cyanea',
+			'Octopus alecto',
+			'Octopus alphaeus',
+			'Octopus australis',
+			'Octopus balboai',
+			'Octopus berrima',
+			'Octopus bimaculatus',
+			'Octopus bimaculoides',
+			'Octopus bocki',
+			'Octopus californicus',
+			'Octopus campbelli'
+    	];
+
+    	$key = array_rand($genera);
+
+    	return $genera[$key];
     }
 }
