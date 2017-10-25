@@ -1,16 +1,21 @@
+AppBundle\Entity\SubFamily:
+    subfamily_{1..10}:
+        name: <family()>
+
 AppBundle\Entity\Genus:
     genus_{1..10}:
         name: <genus()>
-        subFamily: <text(20)>
         speciesCount: <numberBetween(100, 100000)>
         funFact: <sentence()>
         IsPublished: <boolean(75)>
+        firstDiscoveredAt: <dateTimeBetween('-6 months','now')>
+        subFamily: '@subfamily_*'
 
-AppBundle\Entity\GenusNote:    
+AppBundle\Entity\GenusNote:
     genus.note_{1..100}:
         username: <userName()>
         userAvatarFilename: '50%? leanna.jpeg : ryan.jpeg'
         note: <paragraph()>
         createdAt: <dateTimeBetween('-6 months','now')>
         genus: '@genus_*'
-        
+

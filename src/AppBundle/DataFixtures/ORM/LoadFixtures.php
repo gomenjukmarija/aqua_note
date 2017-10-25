@@ -28,27 +28,43 @@ class LoadFixtures implements FixtureInterface
 
     public function genus()
     {
-    	$genera = [
-    		'Octopus vulgaris',
-			'Octopus briareus',
-			'Octopus filosus',
-			'Octopus joubini',
-			'Octopus salutii',
-			'Octopus cyanea',
-			'Octopus alecto',
-			'Octopus alphaeus',
-			'Octopus australis',
-			'Octopus balboai',
-			'Octopus berrima',
-			'Octopus bimaculatus',
-			'Octopus bimaculoides',
-			'Octopus bocki',
-			'Octopus californicus',
-			'Octopus campbelli'
-    	];
+        $genera = [
+            'Octopus',
+            'Balaena',
+            'Orcinus',
+            'Hippocampus',
+            'Asterias',
+            'Amphiprion',
+            'Carcharodon',
+            'Aurelia',
+            'Cucumaria',
+            'Balistoides',
+            'Paralithodes',
+            'Chelonia',
+            'Trichechus',
+            'Eumetopias'
+        ];
 
     	$key = array_rand($genera);
 
     	return $genera[$key];
+    }
+
+    public function family()
+    {
+        $family = [
+            'qqqq',
+            'wwwwww',
+            'eeeeee',
+            'rrrrrrrrr',
+            'uuuuuuuuuu',
+            'kkkkkkkkk',
+            'llllllllll',
+            'mmmmmmmmm'
+        ];
+
+        $key = array_rand($family);
+
+        return $family[$key];
     }
 }
