@@ -54,7 +54,7 @@ class GenusController extends Controller
 	/**
 	* @Route("/genus/{genusName}", name="genus_show") 
 	*/
-	public function showAction($genusName) 
+	public function showAction($genusName, MarkdownTransformer $transformer)
 	{
 		$em = $this->getDoctrine()->getManager();
 		$genus = $em->getRepository('AppBundle:Genus')->findOneBy(['name' => $genusName]);
@@ -64,7 +64,6 @@ class GenusController extends Controller
 
 		}
 
-		$transformer = $this->get('app.markdown_transformer');
 		$funFact = $transformer->parse($genus->getFunFact());
 
 		$this->get('logger')
