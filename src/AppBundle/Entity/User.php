@@ -29,6 +29,8 @@ class User implements UserInterface
      */
     private $email;
 
+
+
     /**
      * The encoded password
      *
@@ -43,6 +45,33 @@ class User implements UserInterface
      * @var string
      */
     private $plainPassword;
+
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isScientist = false;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $firstName;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $lastName;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $avatarUri;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $universityName;
+
 
     /**
      * @ORM\Column(type="json_array")
@@ -115,5 +144,60 @@ class User implements UserInterface
         $this->roles = $roles;
     }
 
+    public function getAvatarUri()
+    {
+        return $this->avatarUri;
+    }
 
+    public function setAvatarUri($avatarUri)
+    {
+        $this->avatarUri = $avatarUri;
+    }
+
+    public function getisScientist()
+    {
+        return $this->isScientist;
+    }
+
+    public function setIsScientist($isScientist)
+    {
+        $this->isScientist = $isScientist;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * @param mixed $firstName
+     */
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    }
+
+
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+    }
+
+    public function getUniversityName()
+    {
+        return $this->universityName;
+    }
+
+    public function setUniversityName($universityName)
+    {
+        $this->universityName = $universityName;
+    }
 }

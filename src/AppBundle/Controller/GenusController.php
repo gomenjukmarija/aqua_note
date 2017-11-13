@@ -35,7 +35,11 @@ class GenusController extends Controller
 		$em->persist($genusNote);
 		$em->flush();
 
-		return new Response('<html><body>Genus created!</body></html>');
+        return new Response(sprintf(
+            '<html><body>Genus created! <a href="%s">%s</a></body></html>',
+            $this->generateUrl('genus_show', ['slug' => $genus->getSlug()]),
+            $genus->getName()
+        ));
 	}
 
 	/**
@@ -49,15 +53,14 @@ class GenusController extends Controller
 		return $this->render('genus/list.html.twig', [
 			'genuses' => $genuses,		
 		]);	
-	}	
+	}
 
-	/**
-	* @Route("/genus/{genusName}", name="genus_show") 
-	*/
-	public function showAction($genusName, MarkdownTransformer $transformer)
+    /**
+     * @Route("/genus/{slug}", name="genus_show")
+     */
+	public function showAction(Genus $genus, MarkdownTransformer $transformer)
 	{
 		$em = $this->getDoctrine()->getManager();
-		$genus = $em->getRepository('AppBundle:Genus')->findOneBy(['name' => $genusName]);
 
 		if(!$genus) {
 			throw $this->createNotFoundException("No genus found!");
@@ -67,7 +70,7 @@ class GenusController extends Controller
 		$funFact = $transformer->parse($genus->getFunFact());
 
 		$this->get('logger')
-			->info('Showing genus: '.$genusName);
+			->info('Showing genus: '.$genus->getName());
 
 		$recentNotes = $em->getRepository('AppBundle:GenusNote')
 		 ->findAllRecentNotesForGenus($genus);
@@ -81,7 +84,7 @@ class GenusController extends Controller
 	}
 
 	/**
-	* @Route("/genus/{name}/notes", name="genus_show_notes") 
+	* @Route("/genus/{slug}/notes", name="genus_show_notes")
 	* @Method("GET")
 	*/
 	public function getNotesAction(Genus $genus)
