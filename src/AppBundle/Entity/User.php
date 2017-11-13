@@ -10,9 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @ORM\Table(name="user")
- * @UniqueEntity(fields={"email"}, message="It looks like your already have an account!")
+ * @UniqueEntity(fields={"email"}, message="It looks like you already have an account!")
  */
 class User implements UserInterface
 {

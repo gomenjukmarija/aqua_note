@@ -7,7 +7,8 @@ var NoteSection = React.createClass({
 
     componentDidMount: function() {
         this.loadNotesFromServer();
-        setInterval(this.loadNotesFromServer, 2000);
+      //  setInterval(this.loadNotesFromServer, 2000);
+        // из-за этого бесконечно вызывается путь /genus/trichechus/notes в ajax запросах, пока не понятн зачем оно нужно
     },
 
     loadNotesFromServer: function() {
@@ -20,7 +21,6 @@ var NoteSection = React.createClass({
     },
 
     render: function() {
-        console.log('this.state.notes',this.state.notes);
         return (
             <div>
                 <div className="notes-container">
