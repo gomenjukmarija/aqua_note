@@ -25,8 +25,14 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
+    # alias to allow this type to be autowired
+    Knp\Bundle\MarkdownBundle\MarkdownParserInterface: '@markdown.parser'
+    Doctrine\ORM\EntityManager: '@doctrine.orm.default_entity_manager'
+    Psr\Log\LoggerInterface: '@logger'
+
     AppBundle\Service\MarkdownTransformer:
-        arguments: ['@markdown.parser', '@doctrine_cache.providers.my_markdown_cache']
+        arguments:
+            $cacheDriver: '@doctrine_cache.providers.my_markdown_cache'
 
     AppBundle\Doctrine\HashPasswordListener:
         tags:
