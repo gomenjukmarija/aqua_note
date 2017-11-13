@@ -68,11 +68,10 @@ class Genus
     private $notes;
 
     /**
-     * @ORM\ManyToMany(targetEntity="User")
+     * @ORM\ManyToMany(targetEntity="User", inversedBy="studiedGenuses")
      * @ORM\JoinTable(name="genus_scientist")
      */
     private $genusScientists;
-
 
     public function __construct()
     {
@@ -104,7 +103,7 @@ class Genus
         return $this->subFamily;
     }
 
-    public function setSubFamily(SubFamily $subFamily)
+    public function setSubFamily(SubFamily $subFamily = null)
     {
         $this->subFamily = $subFamily;
     }
@@ -173,4 +172,25 @@ class Genus
         $this->slug = $slug;
     }
 
+    public function addGenusScientist(User $user)
+    {
+        if ($this->genusScientists->contains($user)) {
+            return;
+        }
+
+        $this->genusScientists[] = $user;
+    }
+
+    public function removeGenusScientist(User $user)
+    {
+        $this->genusScientists->removeElement($user);
+    }
+
+    /**
+     * @return ArrayCollection|User[]
+     */
+    public function getGenusScientists()
+    {
+        return $this->genusScientists;
+    }
 }

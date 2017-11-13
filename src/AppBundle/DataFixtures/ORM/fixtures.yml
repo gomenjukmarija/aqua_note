@@ -10,6 +10,7 @@ AppBundle\Entity\Genus:
         IsPublished: <boolean(75)>
         firstDiscoveredAt: <dateTimeBetween('-6 months','now')>
         subFamily: '@subfamily_*'
+        genusScientists: '3x @user.aquanaut_*'
 
 AppBundle\Entity\GenusNote:
     genus.note_{1..100}:
@@ -33,6 +34,3 @@ AppBundle\Entity\User:
         lastName: <lastName()>
         universityName: <company()> University
         avatarUri: <imageUrl(100, 100, 'abstract')>
-
-
-

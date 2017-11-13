@@ -16,21 +16,35 @@ class GenusController extends Controller
 	/**
 	* @Route("/genus/new") 
 	*/
-	public function newAction() 
+	public function newAction()
 	{
+
+
+        $em = $this->getDoctrine()->getManager();
+
+	    $subFamily = $em->getRepository('AppBundle:SubFamily')
+            ->findAny();
+
 	    $genus = new Genus();
 	    $genus->setName('Octopus'.rand(1,100));
-		$genus->setSubFamily('Octoppdinae');
+        $genus->setSubFamily($subFamily);
 		$genus->setSpeciesCount(rand(100,99999));
+        $genus->setFirstDiscoveredAt(new \DateTime('50 years'));
 
-		$genusNote = new GenusNote(); 
+		$genusNote = new GenusNote();
 		$genusNote->setUsername('Mary');
 		$genusNote->setuserAvatarFilename('leanna.jpeg');
 		$genusNote->setNote('Lorem ipsum dolor sit amet, consectetur adipiscing elit');
 		$genusNote->setCreatedAt(new \DateTime('-1 month'));
 		$genusNote->setGenus($genus);
 
-		$em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository('AppBundle:User')
+            ->findOneBy(['email' => 'aquanaut1@example.org']);
+
+        $genus->addGenusScientist($user);
+        $genus->addGenusScientist($user); // duplicate is ignored!
+
+
 		$em->persist($genus);
 		$em->persist($genusNote);
 		$em->flush();
@@ -106,4 +120,33 @@ class GenusController extends Controller
 
 		return new JsonResponse($data);
 	}
+
+    /**
+     * @Route("/genus/{genusId}/scientists/{userId}", name="genus_scientists_remove")
+     * @Method("DELETE")
+     */
+    public function removeGenusScientistAction($genusId, $userId)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var Genus $genus */
+        $genus = $em->getRepository('AppBundle:Genus')
+            ->find($genusId);
+
+        if (!$genus) {
+            throw $this->createNotFoundException('genus not found');
+        }
+
+        $genusScientist = $em->getRepository('AppBundle:User')
+            ->find($userId);
+
+        if (!$genusScientist) {
+            throw $this->createNotFoundException('scientist not found');
+        }
+
+        $genus->removeGenusScientist($genusScientist);
+        $em->persist($genus);
+        $em->flush();
+        return new Response(null, 204);
+    }
 }
