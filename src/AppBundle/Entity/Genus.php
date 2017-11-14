@@ -68,8 +68,7 @@ class Genus
     private $notes;
 
     /**
-     * @ORM\ManyToMany(targetEntity="User", inversedBy="studiedGenuses", fetch="EXTRA_LAZY")
-     * @ORM\JoinTable(name="genus_scientist")
+     * @ORM\OneToMany(targetEntity="GenusScientist", mappedBy="genus", fetch="EXTRA_LAZY")
      */
     private $genusScientists;
 
@@ -179,12 +178,19 @@ class Genus
         }
 
         $this->genusScientists[] = $user;
+        $user->addStudiedGenus($this);
     }
 
     public function removeGenusScientist(User $user)
     {
+        if (!$this->genusScientists->contains($user)) {
+            return;
+        }
         $this->genusScientists->removeElement($user);
+        // not needed for persistence, just keeping both sides in sync
+        $user->removeStudiedGenus($this);
     }
+
 
     /**
      * @return ArrayCollection|User[]

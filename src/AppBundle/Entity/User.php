@@ -79,8 +79,7 @@ class User implements UserInterface
     private $roles = [];
 
     /**
-     * @ORM\ManyToMany(targetEntity="Genus", mappedBy="genusScientists")
-     * @ORM\OrderBy({"name" = "ASC"})
+     * @ORM\OneToMany(targetEntity="GenusScientist", mappedBy="user")
      */
     private $studiedGenuses;
 
@@ -233,6 +232,25 @@ class User implements UserInterface
     public function getStudiedGenuses()
     {
         return $this->studiedGenuses;
+    }
+
+    public function addStudiedGenus(Genus $genus)
+    {
+        if ($this->studiedGenuses->contains($genus)) {
+            return;
+        }
+
+        $this->studiedGenuses[] = $genus;
+        $genus->addGenusScientist($this);
+    }
+
+    public function removeStudiedGenus(Genus $genus)
+    {
+        if (!$this->studiedGenuses->contains($genus)) {
+            return;
+        }
+        $this->studiedGenuses->removeElement($genus);
+        $genus->removeGenusScientist($this);
     }
 
 }
