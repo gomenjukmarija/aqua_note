@@ -53,14 +53,14 @@ class LoadFixtures implements FixtureInterface
     public function family()
     {
         $family = [
-            'qqqq',
-            'wwwwww',
-            'eeeeee',
-            'rrrrrrrrr',
-            'uuuuuuuuuu',
-            'kkkkkkkkk',
-            'llllllllll',
-            'mmmmmmmmm'
+            'Octopodinae1',
+            'Octopodinae2',
+            'Octopodinae3',
+            'Octopodinae4',
+            'Octopodinae5',
+            'Octopodinae6',
+            'Octopodinae7',
+            'Octopodinae8'
         ];
 
         $key = array_rand($family);
