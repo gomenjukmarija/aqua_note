@@ -2,7 +2,9 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Repository\GenusRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -75,6 +77,7 @@ class Genus
      *     orphanRemoval=true,
      *     cascade={"persist"}
      * )
+     * @Assert\Valid()
      */
     private $genusScientists;
 
@@ -204,6 +207,17 @@ class Genus
     public function getGenusScientists()
     {
         return $this->genusScientists;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection|GenusScientist[]
+     */
+
+    public function getExpertScientists()
+    {
+        return $this->getGenusScientists()->matching(
+            GenusRepository::createExpertCriteria()
+        );
     }
 
 }
