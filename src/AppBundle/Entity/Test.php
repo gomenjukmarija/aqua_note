@@ -3,10 +3,13 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="test")
+ * @UniqueEntity(fields={"nickname"}, message="It looks like you already have this user!")
  */
 class Test
 {
@@ -18,7 +21,8 @@ class Test
     private $id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", unique=true)
+     * @Assert\NotBlank(message="Please enter a clever nickname")
      */
     private $nickname;
 
@@ -29,6 +33,7 @@ class Test
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank()
      */
     private $tagLine;
 
