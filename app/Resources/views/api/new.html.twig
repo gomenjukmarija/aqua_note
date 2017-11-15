@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h1>New User</h1>
+                {{ form_start(testForm) }}
+                {{ form_widget(testForm) }}
+                <button type="submit" class="btn btn-primary">Save</button>
+                {{ form_end(testForm) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

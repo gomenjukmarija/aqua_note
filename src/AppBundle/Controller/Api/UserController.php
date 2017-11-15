@@ -3,48 +3,36 @@
 namespace AppBundle\Controller\Api;
 
 use AppBundle\Entity\Test;
+use AppBundle\Form\Api\TestFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
     /**
      * @Route("/api/user")
-     * @Method("POST")
      */
-    public function newAction()
+    public function newAction(Request $request)
     {
-        $nickname = 'ObjectOrienter'.rand(0, 999);
-        $data = array(
-            'nickname' => $nickname,
-            'avatarNumber' => 5,
-            'tagLine' => 'a test dev!'
-        );
+        $form = $this->createForm(TestFormType::class);
+        $form->handleRequest($request);
 
-        $user = new Test();
+        if($form->isSubmitted()) {
+            $user = $form->getData();
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+            return $this->redirectToRoute('api_user_list');
+        }
 
-        $user->setNickname($data['nickname']);
-        $user->setAvatarNumber($data['avatarNumber']);
-        $user->setTagLine($data['tagLine']);
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($user);
-        $em->flush();
-
-        $data = $this->serializeProgrammer($user);
-        $response = new JsonResponse($data, 201);
-        $userUrl = $this->generateUrl(
-            'api_user_show',
-            ['nickname' =>  $user->getNickname()]
-        );
-        $response->headers->set('Location', $userUrl);
-        $response->headers->set('Content-Type', 'application/json');
-        return $response;
+        return $this->render('api/new.html.twig', [
+            'testForm' => $form->createView()
+        ]);
     }
-
 
     /**
      * @Route("/api/user/{nickname}", name="api_user_show")
@@ -64,13 +52,13 @@ class UserController extends Controller
             ));
         }
 
-        $data = $this->serializeProgrammer($user);
+        $json = $this->serialize($user);
 
-        return new JsonResponse($data, 200);
+        return new JsonResponse($json, 200);
     }
 
     /**
-     * @Route("/api/users")
+     * @Route("/api/users", name="api_user_list")
      * @Method("GET")
      */
     public function listAction()
@@ -79,23 +67,72 @@ class UserController extends Controller
             ->getRepository('AppBundle:Test')
             ->findAll();
 
-        $data = array('users' => array());
+        $json = array('users' => array());
 
         foreach ($users as $user) {
-            $data['users'][] = $this->serializeProgrammer($user);
+            $json['users'][] = $this->serialize($user);
         }
 
-        $response = new JsonResponse($data, 200);
+        $response = new JsonResponse($json, 200);
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
 
-    private function serializeProgrammer(Test $user)
+    /**
+     * @Route("/api/user/{nickname}")
+     * @Method({"PUT", "PATCH"})
+     */
+    public function updateAction($nickname)
     {
-        return array(
-            'nickname' => $user->getNickname(),
-            'avatarNumber' => $user->getAvatarNumber(),
-            'tagLine' => $user->getTagLine(),
+        $user = $this->getDoctrine()
+            ->getRepository('AppBundle:Test')
+            ->findOneByNickname($nickname);
+
+        if (!$user) {
+            throw $this->createNotFoundException(sprintf(
+                'No user found with nickname "%s"',
+                $nickname
+            ));
+        }
+
+        $data = array(
+            'tagLine' => 'an update test dev!'
         );
+
+        $user->setTagLine($data['tagLine']);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($user);
+        $em->flush();
+
+        $json = $this->serialize($user);
+        $response = new JsonResponse($json, 200);
+        return $response;
+    }
+
+    /**
+     * @Route("/api/user/{nickname}")
+     * @Method("DELETE")
+     */
+    public function deleteAction($nickname)
+    {
+        $user = $this->getDoctrine()
+            ->getRepository('AppBundle:Test')
+            ->findOneByNickname($nickname);
+        if ($user) {
+            // debated point: should we 404 on an unknown nickname?
+            // or should we just return a nice 204 in all cases?
+            // we're doing the latter
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($user);
+            $em->flush();
+        }
+        return new Response(null, 204);
+    }
+
+    protected function serialize(Test $user)
+    {
+        return $this->container->get('jms_serializer')
+            ->serialize($user, 'json');
     }
 }
