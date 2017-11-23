@@ -15,13 +15,40 @@
 {% endmacro %}
 
 {{ form_start(genusForm) }}
+    {{ form_errors(genusForm) }}
     {{ form_row(genusForm.name) }}
-    {{ form_row(genusForm.subFamily) }}
+    {{ form_row(genusForm.subFamily, {
+        'label': 'Taxonomic Subfamily',
+        'attr': {
+            'class': 'foo'
+        },
+        'placeholder': 'Select a Subfamily'
+    }) }}
     {{ form_row(genusForm.speciesCount, {
-        'label': 'Number of Species'
+        'label': 'Number of Species',
+        'attr': {
+            'class': 'foo'
+        },
+        'placeholder': 'Select a Subfamily',
     }) }}
     {{ form_row(genusForm.funFact) }}
-    {{ form_row(genusForm.isPublished) }}
+
+    {{ form_row(genusForm.isPublished, {
+        help: 'Should this genus be shown on the site?'
+    }) }}
+
+    {#{{ form_label(genusForm.firstDiscoveredAt.year) }}#}
+    {#<select id="{{ genusForm.firstDiscoveredAt.year.vars.id }}"#}
+            {#name="{{ genusForm.firstDiscoveredAt.year.vars.full_name }}">#}
+            {#{% for choice in genusForm.firstDiscoveredAt.year.vars.choices %}#}
+                {#<option value="{{ choice.value }}" {{ choice.value == genusForm.firstDiscoveredAt.year.vars.data ? 'selected' : '' }}>{{ choice.label }}</option>#}
+            {#{% endfor %}#}
+    {#</select>#}
+    {#{{ form_errors(genusForm.firstDiscoveredAt.year) }}#}
+    {#{% do genusForm.firstDiscoveredAt.year.setRendered() %}#}
+    {#{{ form_row(genusForm.firstDiscoveredAt.month) }}#}
+    {#{{ form_row(genusForm.firstDiscoveredAt.day) }}#}
+
     {{ form_row(genusForm.firstDiscoveredAt) }}
 
     <h3>Scientists</h3>
