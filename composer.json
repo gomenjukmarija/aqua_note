@@ -25,6 +25,7 @@
         "doctrine/doctrine-migrations-bundle": "^1.2",
         "doctrine/orm": "^2.5",
         "incenteev/composer-parameter-handler": "^2.0",
+        "javiereguiluz/easyadmin-bundle": "^1.17",
         "jms/serializer-bundle": "^2.2",
         "knplabs/knp-markdown-bundle": "^1.5",
         "sensio/distribution-bundle": "^5.0.19",
