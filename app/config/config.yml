@@ -88,6 +88,7 @@ easy_admin:
             css: ['css/custom_backend.css']
     list:
         title: 'List of %%entity_label%%'
+        actions: ['show']
     entities:
         Genus:
             class: AppBundle\Entity\Genus
@@ -95,12 +96,50 @@ easy_admin:
             help: Genuses are not covered under warranty!
             list:
                 help: Do not feed!
+                actions:
+                    - { name: 'edit', icon: 'pencil', label: 'Edit' }
+                    - { name: 'show', icon: 'info-circle', label: '' }
+                fields:
+                    - 'id'
+                    - 'name'
+                    - 'isPublished'
+                    - { property: 'firstDiscoveredAt', format: 'M Y', label: 'Discovered' }
+                    - 'funFact'
+                    - { property: 'speciesCount', format: '%b' }
+                sort: 'name'
+            search:
+                help: null
+                fields: ['id', 'name']
+        GenusHorde:
+            class: AppBundle\Entity\Genus
+            label: HORDE of Genuses 😱 !!!
+            list:
+                dql_filter: 'entity.speciesCount >= 50000 AND entity.isPublished = true'
+                sort: 'speciesCount'
+                help: Run for your life!!! 😱😱😱
+            search:
+                dql_filter: 'entity.speciesCount >= 50000'
         GenusNote:
             class: AppBundle\Entity\GenusNote
             label: Genus Notes
             list:
                 title: List of notes
+                fields:
+                    - id
+                    - username
+                    - { property: 'userAvatarFilename', label: 'User avatar', type: 'image', base_path: '/images/', sortable: false }
+                    - createdAt
+                    - genus
+                sort: ['genus.name', 'ASC']
         SubFamily:
             class: AppBundle\Entity\SubFamily
+            disabled_actions: ['show']
         User:
             class: AppBundle\Entity\User
+            list:
+                fields:
+                    - id
+                    - { property: 'email', type: 'email' }
+                    - { property: 'isScientist', label: 'Is scientist?', type: 'boolean' }
+                    - fullName
+                    - { property: 'avatarUri', type: 'url' }

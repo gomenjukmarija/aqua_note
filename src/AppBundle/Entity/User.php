@@ -233,4 +233,9 @@ class User implements UserInterface
     {
         return $this->studiedGenuses;
     }
+
+    public function __toString()
+    {
+        return (string) $this->getFullName() ? $this->getFullName() : $this->getEmail();
+    }
 }
